@@ -690,6 +690,14 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
       </div>
     </div>
 
+    <div class="tip">
+      <div class="tip-icon">💧</div>
+      <div>
+        <div class="tip-title">AWD คืออะไร?</div>
+        <div class="tip-body">ทำนาโดยปล่อยให้นาแห้งสลับกับการเติมน้ำ ช่วยลดการปล่อยก๊าซมีเทนได้ 30–40% ประหยัดน้ำ และได้คาร์บอนเครดิตสูงกว่านาน้ำขัง</div>
+      </div>
+    </div>
+
     <!-- Q1: ฟางรอบที่แล้ว -->
     <div class="card">
       <div class="card-head">ฟางจากรอบที่แล้วทำยังไง?</div>
@@ -917,52 +925,69 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
       </div>
     </div>
 
-    <!-- ── Sensor Grid ── -->
+    <!-- ── Sensor: AWD dominant card ── -->
     <div style="font-size:12px;font-weight:800;color:var(--primary);letter-spacing:.06em;margin:6px 0 10px">SENSOR</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+
+    <div style="background:linear-gradient(135deg,var(--primary-light),#c6f0d8);border:2px solid var(--success);border-radius:24px;padding:20px;margin-bottom:10px;box-shadow:0 4px 20px rgba(26,122,69,.15)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+        <div>
+          <div style="font-size:11px;font-weight:800;color:var(--success);letter-spacing:.06em;margin-bottom:4px">ระดับน้ำ AWD</div>
+          <div style="display:flex;align-items:baseline;gap:6px">
+            <div style="font-size:52px;font-weight:800;color:var(--primary);line-height:1">3.2</div>
+            <div style="font-size:18px;font-weight:700;color:var(--on-surf-var)">ซม.</div>
+          </div>
+        </div>
+        <div style="background:var(--success);border-radius:16px;padding:7px 16px;margin-top:4px">
+          <div style="font-size:13px;font-weight:800;color:white">AWD กำลังดี</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--on-surf-var);margin-bottom:6px">
+        <span>0 ซม.</span>
+        <span style="color:var(--success)">— โซนปลอดภัย 1–5 ซม. —</span>
+        <span>6 ซม.</span>
+      </div>
+      <!-- bar: 0–6 cm; safe zone left 16.7% width 66.6%; current 3.2 cm at 53.3% -->
+      <div style="position:relative;height:10px;background:var(--surf-var);border-radius:5px;margin-bottom:12px">
+        <div style="position:absolute;left:16.7%;width:66.6%;height:100%;background:var(--suc-cont);border-radius:5px"></div>
+        <div style="position:absolute;left:53.3%;transform:translateX(-50%);width:4px;height:100%;background:var(--success);border-radius:3px;box-shadow:0 0 0 2px var(--white)"></div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--primary-cont)">ปล่อยให้แห้งต่อได้ อีก ~3 วันค่อยเติมน้ำ</div>
+    </div>
+
+    <!-- ── Other sensors: compact 3-col ── -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
 
       <!-- CH4 -->
-      <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div style="font-size:11px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">มีเทน CH₄</div>
-        <div style="font-size:30px;font-weight:800;color:var(--on-surface);line-height:1">2.4</div>
-        <div style="font-size:11px;color:var(--on-surf-var);margin-bottom:8px">ppm</div>
-        <div style="height:6px;background:var(--surf-var);border-radius:3px;overflow:hidden">
+      <div style="background:var(--white);border-radius:20px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
+        <div style="font-size:10px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">มีเทน CH₄</div>
+        <div style="font-size:26px;font-weight:800;color:var(--on-surface);line-height:1">2.4</div>
+        <div style="font-size:10px;color:var(--on-surf-var);margin-bottom:6px">ppm</div>
+        <div style="height:5px;background:var(--surf-var);border-radius:3px;overflow:hidden">
           <div style="height:100%;width:40%;background:#f59e0b;border-radius:3px"></div>
         </div>
-        <div style="font-size:11px;font-weight:700;color:#f59e0b;margin-top:5px">ปกติ</div>
+        <div style="font-size:10px;font-weight:700;color:#f59e0b;margin-top:4px">ปกติ</div>
       </div>
 
       <!-- CO2 -->
-      <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div style="font-size:11px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">คาร์บอน CO₂</div>
-        <div style="font-size:30px;font-weight:800;color:var(--on-surface);line-height:1">412</div>
-        <div style="font-size:11px;color:var(--on-surf-var);margin-bottom:8px">ppm</div>
-        <div style="height:6px;background:var(--surf-var);border-radius:3px;overflow:hidden">
+      <div style="background:var(--white);border-radius:20px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
+        <div style="font-size:10px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">CO₂</div>
+        <div style="font-size:26px;font-weight:800;color:var(--on-surface);line-height:1">412</div>
+        <div style="font-size:10px;color:var(--on-surf-var);margin-bottom:6px">ppm</div>
+        <div style="height:5px;background:var(--surf-var);border-radius:3px;overflow:hidden">
           <div style="height:100%;width:65%;background:var(--primary);border-radius:3px"></div>
         </div>
-        <div style="font-size:11px;font-weight:700;color:var(--success);margin-top:5px">ปกติ</div>
-      </div>
-
-      <!-- ระดับน้ำ -->
-      <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div style="font-size:11px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">ระดับน้ำ</div>
-        <div style="font-size:30px;font-weight:800;color:var(--on-surface);line-height:1">3.2</div>
-        <div style="font-size:11px;color:var(--on-surf-var);margin-bottom:8px">ซม.</div>
-        <div style="height:6px;background:var(--surf-var);border-radius:3px;overflow:hidden">
-          <div style="height:100%;width:32%;background:#38bdf8;border-radius:3px"></div>
-        </div>
-        <div style="font-size:11px;font-weight:700;color:#0284c7;margin-top:5px">AWD ✓</div>
+        <div style="font-size:10px;font-weight:700;color:var(--success);margin-top:4px">ปกติ</div>
       </div>
 
       <!-- ความชื้นดิน -->
-      <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div style="font-size:11px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">ความชื้นดิน</div>
-        <div style="font-size:30px;font-weight:800;color:var(--on-surface);line-height:1">68</div>
-        <div style="font-size:11px;color:var(--on-surf-var);margin-bottom:8px">%VWC</div>
-        <div style="height:6px;background:var(--surf-var);border-radius:3px;overflow:hidden">
+      <div style="background:var(--white);border-radius:20px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
+        <div style="font-size:10px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">ความชื้น</div>
+        <div style="font-size:26px;font-weight:800;color:var(--on-surface);line-height:1">68</div>
+        <div style="font-size:10px;color:var(--on-surf-var);margin-bottom:6px">%VWC</div>
+        <div style="height:5px;background:var(--surf-var);border-radius:3px;overflow:hidden">
           <div style="height:100%;width:68%;background:var(--primary-cont);border-radius:3px"></div>
         </div>
-        <div style="font-size:11px;font-weight:700;color:var(--success);margin-top:5px">ปกติ</div>
+        <div style="font-size:10px;font-weight:700;color:var(--success);margin-top:4px">ปกติ</div>
       </div>
     </div>
 
@@ -1026,6 +1051,7 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
       <div style="flex:1">
         <div style="font-size:16px;font-weight:800;color:var(--on-surface)">แตกกอ</div>
         <div style="font-size:12px;color:var(--success);font-weight:700;margin-top:2px">✓ บันทึกแล้ว 14 ส.ค. 66</div>
+        <div style="font-size:11px;color:var(--on-surf-var);margin-top:4px">ช่วงแตกกอ: ควรปล่อยให้นาแห้ง 1–2 ครั้ง</div>
       </div>
     </div>
 
@@ -1036,6 +1062,7 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
         <div style="flex:1">
           <div style="font-size:16px;font-weight:800;color:var(--on-surface)">ออกรวง</div>
           <div style="font-size:12px;color:var(--on-surf-var);margin-top:2px">ถึงเวลาแล้ว — กดบันทึกวันนี้</div>
+          <div style="font-size:11px;color:var(--on-surf-var);margin-top:4px">ช่วงออกรวง: ห้ามปล่อยให้แห้ง ต้องมีน้ำ 3–5 ซม.</div>
         </div>
       </div>
       <button id="btn-milestone" onclick="recordMilestone()" style="width:100%;height:52px;border-radius:26px;border:none;background:var(--primary);color:white;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(15,82,56,.3)">
@@ -1049,6 +1076,7 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
       <div style="flex:1">
         <div style="font-size:16px;font-weight:800;color:var(--on-surface)">เริ่มเกี่ยว</div>
         <div style="font-size:12px;color:var(--on-surf-var);margin-top:2px">รอบันทึกขั้นตอนก่อนหน้า</div>
+        <div style="font-size:11px;color:var(--on-surf-var);margin-top:4px">ช่วงก่อนเกี่ยว: ระบายน้ำออก 2 สัปดาห์ล่วงหน้า</div>
       </div>
     </div>
 
