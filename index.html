@@ -367,13 +367,72 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
   cursor: pointer; font-family: var(--font); min-width: 80px;
   transition: background .15s;
 }
-.nav-btn span:first-child { font-size: 22px; }
-.nav-btn span:last-child { font-size: 10px; font-weight: 700; color: var(--on-surf-var); }
+.nav-btn span { font-size: 12px; font-weight: 700; color: var(--on-surf-var); }
 .nav-btn.active { background: var(--primary-light); }
-.nav-btn.active span:last-child { color: var(--primary); font-weight: 800; }
+.nav-btn.active span { color: var(--primary); font-weight: 800; }
 .nav-btn:active { transform: scale(.95); }
 
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.live-dot {
+  display: inline-block;
+  width: 8px; height: 8px; border-radius: 4px;
+  background: var(--success);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* ── IoT location card ── */
+.loc-card-display {
+  display: flex; flex-direction: column; gap: 0;
+}
+.loc-sensor-row {
+  display: flex; align-items: center; gap: 12px;
+}
+.loc-pin-icon {
+  width: 48px; height: 48px; border-radius: 24px;
+  background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.loc-name {
+  font-size: 16px; font-weight: 800; color: var(--on-surface);
+}
+.loc-sensor-id {
+  font-size: 12px; color: var(--on-surf-var);
+  margin-top: 3px; display: flex; align-items: center; gap: 5px;
+}
+.loc-footer {
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--surf-var);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.loc-footer-label {
+  font-size: 11px; color: var(--on-surf-var);
+}
+.loc-edit-link {
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font); font-size: 12px; font-weight: 700;
+  color: var(--primary); text-decoration: underline; padding: 0;
+}
+.loc-edit-section {
+  display: none;
+}
+.loc-edit-section.open {
+  display: block;
+}
+.loc-edit-header {
+  font-size: 13px; font-weight: 700; color: var(--on-surf-var);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
+}
+.loc-confirm-btn {
+  width: 100%; height: 44px; border-radius: 22px; border: none;
+  background: var(--primary-light); color: var(--primary);
+  font-family: var(--font); font-size: 14px; font-weight: 800;
+  cursor: pointer; margin-top: 4px;
+  transition: background .15s;
+}
+.loc-confirm-btn:active { background: var(--on-primary-cont); }
 </style>
 </head>
 <body>
@@ -385,8 +444,7 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 <div class="screen active" id="s0">
   <div class="scroll-area">
   <div class="welcome-hero">
-    <div class="hero-icon">🌾</div>
-    <div class="hero-badge">🇹🇭 T-VER Carbon Credit</div>
+    <div class="hero-badge">T-VER Carbon Credit</div>
     <div class="hero-title">ยินดีต้อนรับ<br/>สู่ AgriCarbon</div>
     <div class="hero-sub">ระบบบันทึกและรับรองคาร์บอนเครดิต<br/>จากการทำนาเปียกสลับแห้ง (AWD)<br/>สามชุก สุพรรณบุรี</div>
   </div>
@@ -423,7 +481,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
     </div>
 
     <div class="tip">
-      <div class="tip-icon">📡</div>
       <div>
         <div class="tip-title">IoT Sensor พร้อมทำงานแล้ว</div>
         <div class="tip-body">เครื่องวัดก๊าซ CH₄ และ CO₂ ในแปลงนาของท่านกำลังทำงานอยู่ ท่านแค่บันทึกข้อมูลที่เครื่องวัดไม่ได้เท่านั้น</div>
@@ -463,11 +520,11 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
     <div class="sec-head" style="padding-top:16px">ข้อมูลส่วนตัว</div>
     <div class="card">
       <div class="field">
-        <label>👤 ชื่อ-นามสกุล</label>
+        <label>ชื่อ-นามสกุล</label>
         <input type="text" id="inp-name" placeholder="ระบุชื่อและนามสกุล"/>
       </div>
       <div class="field">
-        <label>📱 เบอร์โทรศัพท์</label>
+        <label>เบอร์โทรศัพท์</label>
         <input type="number" id="inp-phone" placeholder="08X-XXX-XXXX"/>
         <div class="field-hint">สำหรับรับแจ้งเตือนและผลการรับรองเครดิต</div>
       </div>
@@ -475,27 +532,52 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
     <div class="sec-head">ที่อยู่แปลงนา</div>
     <div class="card">
-      <div class="field">
-        <label>📍 จังหวัด</label>
-        <button class="dd-trigger" id="dd-province" onclick="openSheet('province')">
-          <span id="dd-province-val">เลือกจังหวัด</span>
-          <span class="dd-arrow">▾</span>
-        </button>
+
+      <!-- ── Read-only sensor location (default) ── -->
+      <div class="loc-card-display" id="loc-display">
+        <div class="loc-sensor-row">
+          <div class="loc-pin-icon"></div>
+          <div>
+            <div class="loc-name" id="loc-name-text">สามชุก, สุพรรณบุรี</div>
+            <div class="loc-sensor-id">
+              <span class="live-dot"></span>
+              <span>Sensor #AGC-001</span>
+            </div>
+          </div>
+        </div>
+        <div class="loc-footer">
+          <span class="loc-footer-label">ตรวจพบอัตโนมัติจาก IoT sensor</span>
+          <button class="loc-edit-link" onclick="toggleLocEdit(true)">ไม่ถูกต้อง?</button>
+        </div>
       </div>
-      <div class="field">
-        <label>🏘️ อำเภอ</label>
-        <button class="dd-trigger" id="dd-amphoe" onclick="openSheet('amphoe')">
-          <span id="dd-amphoe-val">เลือกอำเภอ</span>
-          <span class="dd-arrow">▾</span>
-        </button>
+
+      <!-- ── Edit mode (hidden by default) ── -->
+      <div class="loc-edit-section" id="loc-edit">
+        <div class="loc-edit-header">แก้ไขที่อยู่ด้วยตนเอง</div>
+        <div class="field">
+          <label>จังหวัด</label>
+          <button class="dd-trigger has-value" id="dd-province" onclick="openSheet('province')">
+            <span id="dd-province-val">สุพรรณบุรี</span>
+            <span class="dd-arrow">▾</span>
+          </button>
+        </div>
+        <div class="field">
+          <label>อำเภอ</label>
+          <button class="dd-trigger has-value" id="dd-amphoe" onclick="openSheet('amphoe')">
+            <span id="dd-amphoe-val">สามชุก</span>
+            <span class="dd-arrow">▾</span>
+          </button>
+        </div>
+        <div class="field">
+          <label>ตำบล / หมู่บ้าน</label>
+          <button class="dd-trigger has-value" id="dd-tambon" onclick="openSheet('tambon')">
+            <span id="dd-tambon-val">สามชุก</span>
+            <span class="dd-arrow">▾</span>
+          </button>
+        </div>
+        <button class="loc-confirm-btn" onclick="toggleLocEdit(false)">✓ ใช้ที่อยู่นี้</button>
       </div>
-      <div class="field" style="margin-bottom:0">
-        <label>🏡 ตำบล / หมู่บ้าน</label>
-        <button class="dd-trigger" id="dd-tambon" onclick="openSheet('tambon')">
-          <span id="dd-tambon-val">เลือกตำบล</span>
-          <span class="dd-arrow">▾</span>
-        </button>
-      </div>
+
     </div>
   </div>
   </div><!-- /scroll-area -->
@@ -529,28 +611,26 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
     <div class="sec-head" style="padding-top:16px">ขนาดและสายพันธุ์</div>
     <div class="card">
       <div class="field">
-        <label>🗺️ พื้นที่นาทั้งหมด</label>
+        <label>พื้นที่นาทั้งหมด</label>
         <div class="input-area-wrap">
           <input type="number" id="inp-area" placeholder="0" value="15"/>
           <span class="unit">ไร่</span>
         </div>
       </div>
       <div class="field">
-        <label>🌱 สายพันธุ์ข้าวที่ปลูก</label>
+        <label>สายพันธุ์ข้าวที่ปลูก</label>
         <button class="dd-trigger" id="dd-variety" onclick="openSheet('variety')">
           <span id="dd-variety-val">เลือกสายพันธุ์</span>
           <span class="dd-arrow">▾</span>
         </button>
       </div>
       <div class="field" style="margin-bottom:0">
-        <label>🔢 วิธีปลูก</label>
+        <label>วิธีปลูก</label>
         <div class="chip-grid-2">
           <div class="chip selected" id="plant-transplant" onclick="selChip('plant','transplant',this)">
-            <span class="chip-icon">🌿</span>
             <span class="chip-label">ปักดำ</span>
           </div>
           <div class="chip" id="plant-direct" onclick="selChip('plant','direct',this)">
-            <span class="chip-icon">🌾</span>
             <span class="chip-label">หว่านน้ำตม</span>
           </div>
         </div>
@@ -560,18 +640,15 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
     <div class="sec-head">แหล่งน้ำ</div>
     <div class="card" style="margin-bottom:0">
       <div class="field" style="margin-bottom:0">
-        <label>💧 แหล่งน้ำหลักที่ใช้</label>
+        <label>แหล่งน้ำหลักที่ใช้</label>
         <div class="chip-grid-3">
           <div class="chip selected" id="water-irr" onclick="selChip('water','irr',this)">
-            <span class="chip-icon">🏞️</span>
             <span class="chip-label">น้ำคลอง<br/><span style="font-size:10px;font-weight:500;color:var(--outline)">จากคลองชลประทาน</span></span>
           </div>
           <div class="chip" id="water-rain" onclick="selChip('water','rain',this)">
-            <span class="chip-icon">🌧️</span>
             <span class="chip-label">น้ำฝน<br/><span style="font-size:10px;font-weight:500;color:var(--outline)">รอฝนตามฤดูกาล</span></span>
           </div>
           <div class="chip" id="water-pump" onclick="selChip('water','pump',this)">
-            <span class="chip-icon">⛽</span>
             <span class="chip-label">สูบน้ำเอง<br/><span style="font-size:10px;font-weight:500;color:var(--outline)">จากบ่อ/แม่น้ำ</span></span>
           </div>
         </div>
@@ -607,7 +684,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
   <div class="content">
     <div class="tip" style="margin-top:14px">
-      <div class="tip-icon">📅</div>
       <div>
         <div class="tip-title">ข้อมูลก่อนลงเมล็ด — สำคัญมาก</div>
         <div class="tip-body">ข้อมูลส่วนนี้ใช้คำนวณ baseline ของแปลงนาท่าน ส่งผลโดยตรงต่อปริมาณคาร์บอนเครดิตที่จะได้รับ</div>
@@ -616,29 +692,24 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
     <!-- Q1: ฟางรอบที่แล้ว -->
     <div class="card">
-      <div class="card-head">🌾 ฟางจากรอบที่แล้วทำยังไง?</div>
+      <div class="card-head">ฟางจากรอบที่แล้วทำยังไง?</div>
       <div class="chip-grid-2" id="straw-chips">
         <div class="chip bad" id="straw-burn" onclick="selStraw('burn',this)">
-          <span class="chip-icon">🔥</span>
           <span class="chip-label">เผาทิ้ง</span>
           <span class="badge badge-bad">⚠ ลดเครดิต</span>
         </div>
         <div class="chip" id="straw-plow" onclick="selStraw('plow',this)">
-          <span class="chip-icon">🚜</span>
           <span class="chip-label">ไถกลบ</span>
           <span class="badge badge-good">✓ เครดิตสูง</span>
         </div>
         <div class="chip" id="straw-remove" onclick="selStraw('remove',this)">
-          <span class="chip-icon">📦</span>
           <span class="chip-label">เอาออกจากนา</span>
         </div>
         <div class="chip" id="straw-soak" onclick="selStraw('soak',this)">
-          <span class="chip-icon">💧</span>
           <span class="chip-label">ปล่อยเน่าในน้ำ</span>
         </div>
       </div>
       <div id="straw-warn" class="warn" style="margin-top:12px;margin-bottom:0;display:flex">
-        <div class="tip-icon">⚠️</div>
         <div>
           <div class="tip-title" style="color:#e65100">การเผาฟางลดคาร์บอนเครดิตลง 20-30%</div>
           <div class="tip-body">ลองเปลี่ยนเป็นไถกลบ ท่านจะได้เครดิตเพิ่มขึ้นและดินดีขึ้นด้วย</div>
@@ -648,14 +719,12 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
     <!-- Q2: ปุ๋ยหมัก -->
     <div class="card">
-      <div class="card-head">♻️ ใส่ปุ๋ยหมัก / ปุ๋ยคอกก่อนปลูกไหม?</div>
+      <div class="card-head">ใส่ปุ๋ยหมัก / ปุ๋ยคอกก่อนปลูกไหม?</div>
       <div class="chip-grid-2">
         <div class="chip" id="fert-no" onclick="selFert('no',this)">
-          <span class="chip-icon">❌</span>
           <span class="chip-label">ไม่ใส่</span>
         </div>
         <div class="chip selected" id="fert-yes" onclick="selFert('yes',this)">
-          <span class="chip-icon">✅</span>
           <span class="chip-label">ใส่</span>
           <span class="badge badge-good">✓ ดีต่อดิน</span>
         </div>
@@ -671,7 +740,7 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
     <!-- Q3: วันที่วางแผนลงเมล็ด -->
     <div class="card" style="margin-bottom:0">
-      <div class="card-head">📅 วางแผนลงเมล็ดเดือนไหน?</div>
+      <div class="card-head">วางแผนลงเมล็ดเดือนไหน?</div>
       <button class="dd-trigger" onclick="openSheet('plant-month')">
         <span id="dd-month-val">เลือกเดือน</span>
         <span class="dd-arrow">▾</span>
@@ -710,62 +779,61 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
     <div class="sec-head" style="padding-top:16px">ตรวจสอบข้อมูล</div>
 
     <div class="card">
-      <div class="card-head">👤 ข้อมูลเกษตรกร</div>
+      <div class="card-head">ข้อมูลเกษตรกร</div>
       <div class="summary-row">
-        <span class="sum-label">👤 ชื่อ</span>
+        <span class="sum-label">ชื่อ</span>
         <span class="sum-value" id="sum-name">นายสมชาย ทำนา</span>
       </div>
       <div class="summary-row">
-        <span class="sum-label">📍 พื้นที่</span>
+        <span class="sum-label">พื้นที่</span>
         <span class="sum-value" id="sum-loc">สามชุก, สุพรรณบุรี</span>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-head">🌾 ข้อมูลแปลงนา</div>
+      <div class="card-head">ข้อมูลแปลงนา</div>
       <div class="summary-row">
-        <span class="sum-label">🗺️ พื้นที่</span>
+        <span class="sum-label">พื้นที่</span>
         <span class="sum-value">15 ไร่</span>
       </div>
       <div class="summary-row">
-        <span class="sum-label">🌱 สายพันธุ์</span>
+        <span class="sum-label">สายพันธุ์</span>
         <span class="sum-value" id="sum-variety">กข43</span>
       </div>
       <div class="summary-row">
-        <span class="sum-label">💧 แหล่งน้ำ</span>
+        <span class="sum-label">แหล่งน้ำ</span>
         <span class="sum-value">ชลประทาน</span>
       </div>
       <div class="summary-row">
-        <span class="sum-label">🔢 วิธีปลูก</span>
+        <span class="sum-label">วิธีปลูก</span>
         <span class="sum-value">ปักดำ</span>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-head">📋 ข้อมูลเตรียมนา</div>
+      <div class="card-head">ข้อมูลเตรียมนา</div>
       <div class="summary-row">
-        <span class="sum-label">🌾 การจัดการฟาง</span>
+        <span class="sum-label">การจัดการฟาง</span>
         <span class="sum-value bad" id="sum-straw">เผาทิ้ง ⚠</span>
       </div>
       <div class="summary-row">
-        <span class="sum-label">♻️ ปุ๋ยหมัก</span>
+        <span class="sum-label">ปุ๋ยหมัก</span>
         <span class="sum-value good">ใส่ ✓</span>
       </div>
       <div class="summary-row" style="border-bottom:none">
-        <span class="sum-label">📅 เดือนลงเมล็ด</span>
+        <span class="sum-label">เดือนลงเมล็ด</span>
         <span class="sum-value" id="sum-month">พฤษภาคม</span>
       </div>
     </div>
 
     <!-- Credit estimate -->
     <div class="credit-card">
-      <div class="credit-label">🌿 คาร์บอนเครดิตที่คาดการณ์ (ต่อฤดูกาล)</div>
+      <div class="credit-label">คาร์บอนเครดิตที่คาดการณ์ (ต่อฤดูกาล)</div>
       <div class="credit-value">~4.5 <span style="font-size:18px;font-weight:600">tCO₂e</span></div>
       <div class="credit-sub">จากพื้นที่ 15 ไร่ • ประมาณ ~2,250 บาท</div>
     </div>
 
     <div class="tip" style="margin-bottom:4px">
-      <div class="tip-icon">📡</div>
       <div>
         <div class="tip-title"><span class="live-dot"></span>IoT กำลังทำงาน</div>
         <div class="tip-body">หลังยืนยัน ท่านไม่ต้องทำอะไรเพิ่ม IoT sensor จะวัด CH₄ และ CO₂ ให้ทุก 5 นาทีตลอดฤดูกาล</div>
@@ -776,7 +844,7 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
   <div class="bottom-bar" style="display:flex;flex-direction:column;gap:10px">
     <button class="btn" onclick="goTo('s5','fade')">
-      ✅ ยืนยันและเริ่มฤดูกาล
+      ยืนยันและเริ่มฤดูกาล
     </button>
     <button class="btn btn-outline" onclick="goTo('s3','back')">
       ← แก้ไขข้อมูล
@@ -790,12 +858,11 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 <div class="screen" id="s5">
   <div class="scroll-area">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px 24px;flex:1;text-align:center">
-    <div style="font-size:80px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1)">🎉</div>
     <div style="font-size:24px;font-weight:800;color:var(--primary);margin:16px 0 8px">ลงทะเบียนสำเร็จ!</div>
     <div style="font-size:15px;color:var(--on-surf-var);line-height:1.7">IoT sensor กำลังทำงานในแปลงนา<br/><strong style="color:var(--primary)">ไม่ต้องทำอะไรเพิ่ม</strong></div>
 
     <div style="background:linear-gradient(135deg,var(--sec-cont),#ffe066);border-radius:20px;padding:20px;margin:24px 0 0;width:100%;text-align:left;box-shadow:0 4px 20px rgba(255,183,2,.3)">
-      <div style="font-size:12px;font-weight:700;color:var(--on-sec-cont)">🌿 เป้าหมายคาร์บอนเครดิต</div>
+      <div style="font-size:12px;font-weight:700;color:var(--on-sec-cont)">เป้าหมายคาร์บอนเครดิต</div>
       <div style="font-size:38px;font-weight:800;color:var(--on-sec-cont);line-height:1.1">~4.5 <span style="font-size:18px">tCO₂e</span></div>
       <div style="font-size:12px;color:var(--on-sec-cont);opacity:.85;margin-top:4px">รหัสแปลง: AGC-2024-0042 • สามชุก สุพรรณบุรี</div>
     </div>
@@ -828,7 +895,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
     <!-- ── คาร์บอนเครดิต ── -->
     <div style="background:linear-gradient(135deg,#1a6b47,#0f5238);border-radius:24px;padding:20px;margin:14px 0;position:relative;overflow:hidden">
-      <div style="position:absolute;right:-20px;top:-20px;font-size:100px;opacity:.08">🌿</div>
       <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:.08em;margin-bottom:6px">คาร์บอนเครดิต สะสม</div>
       <div style="font-size:44px;font-weight:800;color:white;line-height:1">12.5</div>
       <div style="font-size:14px;color:rgba(255,255,255,.8);margin-bottom:14px">tCO₂e</div>
@@ -857,7 +923,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
       <!-- CH4 -->
       <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div style="font-size:22px;margin-bottom:6px">💨</div>
         <div style="font-size:11px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">มีเทน CH₄</div>
         <div style="font-size:30px;font-weight:800;color:var(--on-surface);line-height:1">2.4</div>
         <div style="font-size:11px;color:var(--on-surf-var);margin-bottom:8px">ppm</div>
@@ -869,7 +934,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
       <!-- CO2 -->
       <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div style="font-size:22px;margin-bottom:6px">🌫️</div>
         <div style="font-size:11px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">คาร์บอน CO₂</div>
         <div style="font-size:30px;font-weight:800;color:var(--on-surface);line-height:1">412</div>
         <div style="font-size:11px;color:var(--on-surf-var);margin-bottom:8px">ppm</div>
@@ -881,7 +945,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
       <!-- ระดับน้ำ -->
       <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div style="font-size:22px;margin-bottom:6px">💧</div>
         <div style="font-size:11px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">ระดับน้ำ</div>
         <div style="font-size:30px;font-weight:800;color:var(--on-surface);line-height:1">3.2</div>
         <div style="font-size:11px;color:var(--on-surf-var);margin-bottom:8px">ซม.</div>
@@ -893,7 +956,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
       <!-- ความชื้นดิน -->
       <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
-        <div style="font-size:22px;margin-bottom:6px">🌱</div>
         <div style="font-size:11px;font-weight:700;color:var(--on-surf-var);margin-bottom:4px">ความชื้นดิน</div>
         <div style="font-size:30px;font-weight:800;color:var(--on-surface);line-height:1">68</div>
         <div style="font-size:11px;color:var(--on-surf-var);margin-bottom:8px">%VWC</div>
@@ -917,13 +979,13 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
   <!-- Bottom nav s6 -->
   <div id="nav-s6" class="bottom-nav-bar">
     <button class="nav-btn active" onclick="setNav('s6',this)">
-      <span>🏠</span><span>หน้าหลัก</span>
+      <span>หน้าหลัก</span>
     </button>
     <button class="nav-btn" onclick="switchTab('s7',this,'s6')">
-      <span>🌾</span><span>การเจริญเติบโต</span>
+      <span>การเจริญเติบโต</span>
     </button>
     <button class="nav-btn" onclick="switchTab('s8',this,'s6')">
-      <span>🚜</span><span>แปลงนาของฉัน</span>
+      <span>แปลงนาของฉัน</span>
     </button>
   </div>
 </div>
@@ -963,27 +1025,27 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
       <div style="width:52px;height:52px;border-radius:26px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">✓</div>
       <div style="flex:1">
         <div style="font-size:16px;font-weight:800;color:var(--on-surface)">แตกกอ</div>
-        <div style="font-size:12px;color:var(--success);font-weight:700;margin-top:2px">✅ บันทึกแล้ว 14 ส.ค. 66</div>
+        <div style="font-size:12px;color:var(--success);font-weight:700;margin-top:2px">✓ บันทึกแล้ว 14 ส.ค. 66</div>
       </div>
     </div>
 
     <!-- Milestone 2: Active -->
     <div style="background:var(--primary-light);border:2px solid var(--primary);border-radius:20px;padding:16px;box-shadow:0 4px 16px rgba(15,82,56,.15);margin-bottom:10px">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
-        <div style="width:52px;height:52px;border-radius:26px;background:var(--sec-cont);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;animation:pulse 2s ease-in-out infinite">🌾</div>
+        <div style="width:52px;height:52px;border-radius:26px;background:var(--sec-cont);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;animation:pulse 2s ease-in-out infinite"></div>
         <div style="flex:1">
           <div style="font-size:16px;font-weight:800;color:var(--on-surface)">ออกรวง</div>
           <div style="font-size:12px;color:var(--on-surf-var);margin-top:2px">ถึงเวลาแล้ว — กดบันทึกวันนี้</div>
         </div>
       </div>
       <button id="btn-milestone" onclick="recordMilestone()" style="width:100%;height:52px;border-radius:26px;border:none;background:var(--primary);color:white;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(15,82,56,.3)">
-        👆 กดเพื่อบันทึกวันนี้
+        กดเพื่อบันทึกวันนี้
       </button>
     </div>
 
     <!-- Milestone 3: Locked -->
     <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);opacity:.4;display:flex;align-items:center;gap:14px">
-      <div style="width:52px;height:52px;border-radius:26px;background:var(--surf-var);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">🔒</div>
+      <div style="width:52px;height:52px;border-radius:26px;background:var(--surf-var);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0"></div>
       <div style="flex:1">
         <div style="font-size:16px;font-weight:800;color:var(--on-surface)">เริ่มเกี่ยว</div>
         <div style="font-size:12px;color:var(--on-surf-var);margin-top:2px">รอบันทึกขั้นตอนก่อนหน้า</div>
@@ -996,13 +1058,13 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
   <!-- Bottom nav s7 -->
   <div id="nav-s7" class="bottom-nav-bar">
     <button class="nav-btn" onclick="switchTab('s6',this,'s7')">
-      <span>🏠</span><span>หน้าหลัก</span>
+      <span>หน้าหลัก</span>
     </button>
     <button class="nav-btn active" onclick="setNav('s7',this)">
-      <span>🌾</span><span>การเจริญเติบโต</span>
+      <span>การเจริญเติบโต</span>
     </button>
     <button class="nav-btn" onclick="switchTab('s8',this,'s7')">
-      <span>🚜</span><span>แปลงนาของฉัน</span>
+      <span>แปลงนาของฉัน</span>
     </button>
   </div>
 </div>
@@ -1021,7 +1083,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
     <!-- Profile card -->
     <div style="background:linear-gradient(135deg,#1a6b47,#0f5238);border-radius:24px;padding:24px;margin-bottom:14px;text-align:center">
-      <div style="font-size:56px;margin-bottom:10px">👨‍🌾</div>
       <div style="font-size:20px;font-weight:800;color:white">นายสมชาย ใจดี</div>
       <div style="font-size:13px;color:rgba(255,255,255,.7);margin-top:4px">สามชุก สุพรรณบุรี</div>
       <div style="display:inline-block;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:800;color:rgba(255,255,255,.9);margin-top:8px">AGC-2024-0042</div>
@@ -1039,12 +1100,10 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
           <div style="font-size:11px;font-weight:700;color:var(--on-surf-var);margin-top:2px">สายพันธุ์</div>
         </div>
         <div style="background:var(--primary-light);border-radius:16px;padding:14px;text-align:center">
-          <div style="font-size:20px;margin-bottom:2px">🏞️</div>
           <div style="font-size:11px;font-weight:800;color:var(--primary)">น้ำคลอง</div>
           <div style="font-size:10px;color:var(--on-surf-var)">แหล่งน้ำ</div>
         </div>
         <div style="background:var(--primary-light);border-radius:16px;padding:14px;text-align:center">
-          <div style="font-size:20px;margin-bottom:2px">🌿</div>
           <div style="font-size:11px;font-weight:800;color:var(--primary)">ปักดำ</div>
           <div style="font-size:10px;color:var(--on-surf-var)">วิธีปลูก</div>
         </div>
@@ -1054,7 +1113,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
     <!-- มาตรฐาน -->
     <div style="background:var(--white);border-radius:20px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid var(--surf-var)">
-        <div style="font-size:24px">📜</div>
         <div>
           <div style="font-size:14px;font-weight:800;color:var(--on-surface)">T-VER</div>
           <div style="font-size:11px;color:var(--on-surf-var)">มาตรฐานคาร์บอนเครดิตไทย</div>
@@ -1062,7 +1120,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
         <div style="margin-left:auto;background:var(--suc-cont);border-radius:12px;padding:4px 10px;font-size:11px;font-weight:800;color:var(--success)">ใช้งานอยู่</div>
       </div>
       <div style="display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid var(--surf-var)">
-        <div style="font-size:24px">📡</div>
         <div>
           <div style="font-size:14px;font-weight:800;color:var(--on-surface)">IoT Sensor</div>
           <div style="font-size:11px;color:var(--on-surf-var)">CH₄ + CO₂ ทุก 5 นาที</div>
@@ -1073,7 +1130,6 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:14px;padding:8px 0">
-        <div style="font-size:24px">📅</div>
         <div>
           <div style="font-size:14px;font-weight:800;color:var(--on-surface)">ฤดูกาล 2566/67</div>
           <div style="font-size:11px;color:var(--on-surf-var)">เริ่ม พฤษภาคม 2566</div>
@@ -1083,7 +1139,7 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 
     <!-- ปุ่มแก้ไข -->
     <button onclick="goTo('s1','back')" style="width:100%;height:52px;border-radius:26px;border:2.5px solid var(--primary);background:var(--white);color:var(--primary);font-family:var(--font);font-size:15px;font-weight:800;cursor:pointer">
-      ✏️ แก้ไขข้อมูล
+      แก้ไขข้อมูล
     </button>
 
   </div>
@@ -1092,13 +1148,13 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
   <!-- Bottom nav s8 -->
   <div id="nav-s8" class="bottom-nav-bar">
     <button class="nav-btn" onclick="switchTab('s6',this,'s8')">
-      <span>🏠</span><span>หน้าหลัก</span>
+      <span>หน้าหลัก</span>
     </button>
     <button class="nav-btn" onclick="switchTab('s7',this,'s8')">
-      <span>🌾</span><span>การเจริญเติบโต</span>
+      <span>การเจริญเติบโต</span>
     </button>
     <button class="nav-btn active" onclick="setNav('s8',this)">
-      <span>🚜</span><span>แปลงนาของฉัน</span>
+      <span>แปลงนาของฉัน</span>
     </button>
   </div>
 </div>
@@ -1123,52 +1179,52 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,82,56,
 // ── Sheet data ──
 const SHEETS = {
   province: {
-    title: '📍 เลือกจังหวัด', key: 'province', target: 'dd-province-val',
+    title: 'เลือกจังหวัด', key: 'province', target: 'dd-province-val',
     items: [
-      {i:'🌾',l:'สุพรรณบุรี'},{i:'🌾',l:'พระนครศรีอยุธยา'},{i:'🌾',l:'ชัยนาท'},
-      {i:'🌾',l:'สิงห์บุรี'},{i:'🌾',l:'อ่างทอง'},{i:'🌾',l:'นครสวรรค์'},
-      {i:'🌾',l:'กำแพงเพชร'},{i:'🌾',l:'พิษณุโลก'},{i:'🌾',l:'พิจิตร'},
+      {l:'สุพรรณบุรี'},{l:'พระนครศรีอยุธยา'},{l:'ชัยนาท'},
+      {l:'สิงห์บุรี'},{l:'อ่างทอง'},{l:'นครสวรรค์'},
+      {l:'กำแพงเพชร'},{l:'พิษณุโลก'},{l:'พิจิตร'},
     ]
   },
   amphoe: {
-    title: '🏘️ เลือกอำเภอ', key: 'amphoe', target: 'dd-amphoe-val',
+    title: 'เลือกอำเภอ', key: 'amphoe', target: 'dd-amphoe-val',
     items: [
-      {i:'📍',l:'สามชุก'},{i:'📍',l:'เมืองสุพรรณบุรี'},{i:'📍',l:'บางปลาม้า'},
-      {i:'📍',l:'ศรีประจันต์'},{i:'📍',l:'ดอนเจดีย์'},{i:'📍',l:'เดิมบางนางบวช'},
-      {i:'📍',l:'อู่ทอง'},{i:'📍',l:'หนองหญ้าไซ'},
+      {l:'สามชุก'},{l:'เมืองสุพรรณบุรี'},{l:'บางปลาม้า'},
+      {l:'ศรีประจันต์'},{l:'ดอนเจดีย์'},{l:'เดิมบางนางบวช'},
+      {l:'อู่ทอง'},{l:'หนองหญ้าไซ'},
     ]
   },
   tambon: {
-    title: '🏡 เลือกตำบล', key: 'tambon', target: 'dd-tambon-val',
+    title: 'เลือกตำบล', key: 'tambon', target: 'dd-tambon-val',
     items: [
-      {i:'🏠',l:'สามชุก'},{i:'🏠',l:'หนองผักนาก'},{i:'🏠',l:'บ้านสระ'},
-      {i:'🏠',l:'หนองสาหร่าย'},{i:'🏠',l:'คลองสระ'},{i:'🏠',l:'กระจัน'},
+      {l:'สามชุก'},{l:'หนองผักนาก'},{l:'บ้านสระ'},
+      {l:'หนองสาหร่าย'},{l:'คลองสระ'},{l:'กระจัน'},
     ]
   },
   variety: {
-    title: '🌱 เลือกสายพันธุ์ข้าว', key: 'variety', target: 'dd-variety-val',
+    title: 'เลือกสายพันธุ์ข้าว', key: 'variety', target: 'dd-variety-val',
     items: [
-      {i:'⭐',l:'กข43 — แนะนำ (AWD เหมาะที่สุด)'},{i:'🌱',l:'กข41'},
-      {i:'🌱',l:'ปทุมธานี 1'},{i:'🌱',l:'สุพรรณบุรี 1'},
-      {i:'🌱',l:'สุพรรณบุรี 2'},{i:'🌱',l:'สุพรรณบุรี 3'},
-      {i:'🌱',l:'ขาวดอกมะลิ 105'},{i:'🌱',l:'ชัยนาท 1'},
-      {i:'🌱',l:'อื่นๆ'},
+      {l:'กข43 — แนะนำ (AWD เหมาะที่สุด)'},{l:'กข41'},
+      {l:'ปทุมธานี 1'},{l:'สุพรรณบุรี 1'},
+      {l:'สุพรรณบุรี 2'},{l:'สุพรรณบุรี 3'},
+      {l:'ขาวดอกมะลิ 105'},{l:'ชัยนาท 1'},
+      {l:'อื่นๆ'},
     ]
   },
   'fert-qty': {
-    title: '♻️ ปริมาณปุ๋ยหมัก / ปุ๋ยคอก', key: 'fertQty', target: 'dd-fert-qty-val',
+    title: 'ปริมาณปุ๋ยหมัก / ปุ๋ยคอก', key: 'fertQty', target: 'dd-fert-qty-val',
     items: [
-      {i:'📦',l:'น้อยกว่า 100 กก./ไร่'},{i:'📦',l:'100–200 กก./ไร่'},
-      {i:'📦',l:'200–500 กก./ไร่'},{i:'📦',l:'มากกว่า 500 กก./ไร่'},
+      {l:'น้อยกว่า 100 กก./ไร่'},{l:'100–200 กก./ไร่'},
+      {l:'200–500 กก./ไร่'},{l:'มากกว่า 500 กก./ไร่'},
     ]
   },
   'plant-month': {
-    title: '📅 เดือนที่วางแผนลงเมล็ด', key: 'plantMonth', target: 'dd-month-val',
+    title: 'เดือนที่วางแผนลงเมล็ด', key: 'plantMonth', target: 'dd-month-val',
     items: [
-      {i:'🌤',l:'มกราคม'},{i:'🌤',l:'กุมภาพันธ์'},{i:'🌤',l:'มีนาคม'},
-      {i:'🌤',l:'เมษายน'},{i:'🌧',l:'พฤษภาคม'},{i:'🌧',l:'มิถุนายน'},
-      {i:'🌧',l:'กรกฎาคม'},{i:'🌧',l:'สิงหาคม'},{i:'🌧',l:'กันยายน'},
-      {i:'🌤',l:'ตุลาคม'},{i:'🌤',l:'พฤศจิกายน'},{i:'🌤',l:'ธันวาคม'},
+      {l:'มกราคม'},{l:'กุมภาพันธ์'},{l:'มีนาคม'},
+      {l:'เมษายน'},{l:'พฤษภาคม'},{l:'มิถุนายน'},
+      {l:'กรกฎาคม'},{l:'สิงหาคม'},{l:'กันยายน'},
+      {l:'ตุลาคม'},{l:'พฤศจิกายน'},{l:'ธันวาคม'},
     ]
   },
 };
@@ -1186,7 +1242,7 @@ function openSheet(type) {
     const d = document.createElement('div');
     const isSel = STATE[s.key] === item.l;
     d.className = 'sheet-item' + (isSel ? ' sel' : '');
-    d.innerHTML = `<span class="sicon">${item.i}</span><span>${item.l}</span>${isSel ? '<span class="check">✓</span>' : ''}`;
+    d.innerHTML = `<span>${item.l}</span>${isSel ? '<span class="check">✓</span>' : ''}`;
     d.onclick = () => pickSheet(item.l, s.key, s.target);
     list.appendChild(d);
   });
@@ -1206,7 +1262,7 @@ function pickSheet(val, key, targetId) {
   if (key === 'variety') { const sv = document.getElementById('sum-variety'); if(sv) sv.textContent = val.split(' —')[0]; }
   if (key === 'plantMonth') { const sm = document.getElementById('sum-month'); if(sm) sm.textContent = val; }
   closeSheet();
-  showToast('✓ เลือก ' + val.split(' —')[0]);
+  showToast('เลือก ' + val.split(' —')[0]);
 }
 
 function closeSheet() {
@@ -1270,6 +1326,23 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
+// ── IoT location card toggle ──
+function toggleLocEdit(open) {
+  const display = document.getElementById('loc-display');
+  const edit    = document.getElementById('loc-edit');
+  if (open) {
+    display.style.display = 'none';
+    edit.classList.add('open');
+  } else {
+    // sync the display label from selected dropdown values
+    const amp = document.getElementById('dd-amphoe-val').textContent;
+    const prov = document.getElementById('dd-province-val').textContent;
+    document.getElementById('loc-name-text').textContent = amp + ', ' + prov;
+    display.style.display = '';
+    edit.classList.remove('open');
+  }
+}
+
 // ── Tab switch (dashboard screens share nav) ──
 function switchTab(toId, btn, fromId) {
   goTo(toId, 'fade');
@@ -1280,11 +1353,11 @@ function setNav(screenId, btn) { /* already active */ }
 function recordMilestone() {
   const btn = document.getElementById('btn-milestone');
   if (btn) {
-    btn.textContent = '✅ บันทึกแล้ว!';
+    btn.textContent = 'บันทึกแล้ว!';
     btn.style.background = 'var(--success)';
     btn.disabled = true;
   }
-  showToast('✅ บันทึกระยะออกรวงแล้ว!');
+  showToast('บันทึกระยะออกรวงแล้ว');
 }
 
 // ── Init pre-fill demo ──
@@ -1292,10 +1365,11 @@ window.addEventListener('load', () => {
   document.getElementById('inp-name').value = 'นายสมชาย ใจดี';
   document.getElementById('inp-phone').value = '0812345678';
   document.getElementById('inp-area').value = '15';
+  // seed STATE for location (no toast, dropdowns start pre-filled)
+  STATE.province = 'สุพรรณบุรี';
+  STATE.amphoe   = 'สามชุก';
+  STATE.tambon   = 'สามชุก';
   setTimeout(() => {
-    pickSheet('สุพรรณบุรี','province','dd-province-val');
-    pickSheet('สามชุก','amphoe','dd-amphoe-val');
-    pickSheet('สามชุก','tambon','dd-tambon-val');
     pickSheet('พฤษภาคม','plantMonth','dd-month-val');
   }, 100);
   buildDashChart();
